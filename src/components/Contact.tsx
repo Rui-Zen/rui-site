@@ -1,38 +1,145 @@
-export function Contact() {
-  return (
-    <section id="contact" className="seamless-section" style={{ background: 'var(--neutral-dark)', color: 'var(--bg-parchment)', paddingBottom: '0' }}>
-      <div className="section-container section-inner" style={{ textAlign: 'center', minHeight: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <div className="eyebrow" style={{ color: 'var(--neutral-gray)', justifyContent: 'center', marginBottom: '40px' }}>Connection</div>
-        <h2 className="big-title" style={{ color: 'var(--bg-parchment)', marginBottom: '60px' }}>
-          Let's Design <br /> The Future.
-        </h2>
+import { useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useGSAP } from '@gsap/react'
+import { Button } from './ui/button'
+import { Separator } from './ui/separator'
 
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '24px' }}>
-          <a 
-            href="mailto:hello@ruizen.design" 
-            className="link-underline"
-            style={{ fontSize: '2rem', fontFamily: 'var(--font-serif)', color: 'var(--accent-blue-light)' }}
-          >
-            hello@ruizen.design
-          </a>
+gsap.registerPlugin(ScrollTrigger)
+
+const socials = ['LinkedIn', 'Twitter', 'GitHub', 'Read.cv']
+
+export function Contact() {
+  const sectionRef = useRef<HTMLElement>(null)
+
+  useGSAP(() => {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top 65%',
+        toggleActions: 'play none none reverse',
+      }
+    })
+
+    tl.fromTo('.contact-eyebrow',
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
+    )
+    .fromTo('.contact-title .word',
+      { y: 60, opacity: 0, rotationX: 25 },
+      { y: 0, opacity: 1, rotationX: 0, duration: 0.9, stagger: 0.08, ease: 'power4.out' },
+      '-=0.3'
+    )
+    .fromTo('.contact-email',
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' },
+      '-=0.4'
+    )
+    .fromTo('.contact-social',
+      { y: 15, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, stagger: 0.08, ease: 'power3.out' },
+      '-=0.3'
+    )
+
+    // Geometric parallax
+    gsap.to('.contact-geo', {
+      y: -40,
+      rotation: 12,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 2,
+      }
+    })
+  }, { scope: sectionRef })
+
+  const titleWords = ["Let's", "Design", "The", "Future."]
+
+  return (
+    <section
+      id="contact"
+      ref={sectionRef}
+      className="paper-section paper-section--dark"
+    >
+      {/* Geometric layer */}
+      <div className="geo-layer">
+        <svg className="contact-geo geo-el" style={{ right: '10%', top: '15%' }} width="180" height="180" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="44" stroke="rgba(245,244,237,0.03)" strokeWidth="0.5" />
+          <circle cx="50" cy="50" r="30" stroke="rgba(245,244,237,0.02)" strokeWidth="0.4" />
+          <circle cx="50" cy="50" r="16" stroke="rgba(245,244,237,0.015)" strokeWidth="0.3" />
+        </svg>
+        <svg className="contact-geo geo-el" style={{ left: '5%', bottom: '20%' }} width="24" height="24" viewBox="0 0 100 100" fill="none">
+          <line x1="50" y1="5" x2="50" y2="95" stroke="rgba(245,244,237,0.05)" strokeWidth="3" strokeLinecap="round" />
+          <line x1="5" y1="50" x2="95" y2="50" stroke="rgba(245,244,237,0.05)" strokeWidth="3" strokeLinecap="round" />
+        </svg>
+        {/* Paper fold */}
+        <svg className="contact-geo geo-el" style={{ right: '3%', bottom: '5%' }} width="200" height="200" viewBox="0 0 200 200" fill="none">
+          <polygon points="200,0 200,200 0,200" fill="rgba(245,244,237,0.01)" />
+          <line x1="200" y1="0" x2="0" y2="200" stroke="rgba(245,244,237,0.03)" strokeWidth="0.5" />
+        </svg>
+      </div>
+
+      <div className="section-inner" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="contact-eyebrow eyebrow mb-10 justify-center" style={{ color: 'var(--stone)' }}>
+          Connection
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', marginTop: '80px' }}>
-          {['LinkedIn', 'Twitter', 'GitHub', 'Read.cv'].map(social => (
-            <a 
-              key={social} 
-              href="#" 
-              className="link-underline"
-              style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--neutral-gray)' }}
+        <h2
+          className="contact-title display-title mb-16"
+          style={{ color: 'var(--bg-parchment)', perspective: '600px' }}
+        >
+          {titleWords.map((word, i) => (
+            <span key={i} className="word inline-block mr-[0.3em]">
+              {word}
+              {i === 1 && <br />}
+            </span>
+          ))}
+        </h2>
+
+        <div className="contact-email mb-12">
+          <Button
+            asChild
+            variant="ghost"
+            className="h-auto p-0 text-[var(--brand-light)] hover:text-[var(--bg-parchment)] hover:bg-transparent"
+          >
+            <a
+              href="mailto:hello@ruizen.design"
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: 'clamp(1.3rem, 2.5vw, 2rem)',
+                fontWeight: 500,
+                textDecoration: 'none',
+              }}
+            >
+              hello@ruizen.design
+            </a>
+          </Button>
+        </div>
+
+        <Separator className="mb-12 max-w-xs mx-auto bg-[rgba(245,244,237,0.06)]" />
+
+        <div className="flex gap-8">
+          {socials.map(social => (
+            <a
+              key={social}
+              href="#"
+              className="contact-social link-underline"
+              style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.72rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.15em',
+                color: 'var(--stone)',
+              }}
             >
               {social}
             </a>
           ))}
         </div>
       </div>
-      
-      {/* Visual Transition to Footer */}
-      <div style={{ height: '200px', background: 'linear-gradient(to bottom, var(--neutral-dark), #141413)' }} />
     </section>
   )
 }
