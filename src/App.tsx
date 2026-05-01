@@ -8,48 +8,56 @@ import { Skills }  from './components/Skills'
 import { Writing } from './components/Writing'
 import { Contact } from './components/Contact'
 import { Footer }  from './components/Footer'
+import { AmbientBlob } from './components/AmbientBlob'
 import { initAllAnimations } from './lib/animations'
 
 function App() {
   useEffect(() => {
-    // Small rAF delay ensures DOM is fully painted before anime reads positions
-    const raf = requestAnimationFrame(() => {
-      setTimeout(() => initAllAnimations(), 80)
-    })
-    return () => cancelAnimationFrame(raf)
+    const timeout = setTimeout(() => {
+      try {
+        initAllAnimations()
+      } catch (e) {
+        console.error("Animation init failed:", e)
+      }
+    }, 200)
+    return () => clearTimeout(timeout)
   }, [])
 
   return (
-    <>
-      {/* Custom cursor (hidden on touch devices via CSS) */}
+    <div style={{ backgroundColor: 'var(--bg-parchment)', minHeight: '100vh' }}>
+      <div id="bg-layer" />
+      <div className="noise-overlay" />
+      <AmbientBlob />
+      
       <div
         data-cursor
         style={{
-          position: 'fixed',
-          width: 32, height: 32,
+          position: 'fixed', top: 0, left: 0,
+          width: 40, height: 40,
           borderRadius: '50%',
-          border: '1.5px solid rgba(27,54,93,0.6)',
-          pointerEvents: 'none',
-          zIndex: 9999,
-          transform: 'translate(-50%, -50%)',
-          transition: 'opacity 0.3s',
-          mixBlendMode: 'multiply',
+          border: '1px solid var(--accent-blue)',
+          pointerEvents: 'none', zIndex: 10000,
+          willChange: 'transform',
+          opacity: 0, // Hide until moved
+          transition: 'opacity 0.3s'
         }}
       />
       <div
         data-cursor-dot
         style={{
-          position: 'fixed',
-          width: 5, height: 5,
+          position: 'fixed', top: 0, left: 0,
+          width: 4, height: 4,
           borderRadius: '50%',
-          background: '#1B365D',
-          pointerEvents: 'none',
-          zIndex: 9999,
-          transform: 'translate(-50%, -50%)',
+          background: 'var(--accent-blue)',
+          pointerEvents: 'none', zIndex: 10001,
+          willChange: 'transform',
+          opacity: 0, // Hide until moved
+          transition: 'opacity 0.3s'
         }}
       />
 
       <Nav />
+      
       <main>
         <Hero />
         <About />
@@ -58,8 +66,9 @@ function App() {
         <Writing />
         <Contact />
       </main>
+
       <Footer />
-    </>
+    </div>
   )
 }
 
