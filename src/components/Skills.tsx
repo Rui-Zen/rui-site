@@ -2,8 +2,8 @@ import { useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
-import { Separator } from './ui/separator'
 import { Badge } from './ui/badge'
+import { Separator } from './ui/separator'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -50,9 +50,9 @@ export function Skills() {
 
     // Individual skill items — stagger within each group
     gsap.fromTo('.skill-item',
-      { x: -15, opacity: 0 },
+      { y: 15, opacity: 0 },
       {
-        x: 0, opacity: 1,
+        y: 0, opacity: 1,
         duration: 0.5,
         stagger: 0.06,
         ease: 'power3.out',
@@ -66,7 +66,7 @@ export function Skills() {
 
     // Geometric parallax
     gsap.to('.skills-geo', {
-      y: -60,
+      y: -120,
       rotation: 8,
       ease: 'none',
       scrollTrigger: {

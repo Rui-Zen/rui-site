@@ -43,7 +43,7 @@ export function Contact() {
 
     // Geometric parallax
     gsap.to('.contact-geo', {
-      y: -40,
+      y: -60,
       rotation: 12,
       ease: 'none',
       scrollTrigger: {

@@ -12,7 +12,14 @@ export function Hero() {
   const subRef = useRef<HTMLParagraphElement>(null)
 
   useGSAP(() => {
-    const tl = gsap.timeline({ delay: 0.5 })
+    // Entrance animations triggered when section comes into view
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+      }
+    })
 
     // Title entrance — staggered per word
     if (titleRef.current) {
@@ -46,26 +53,26 @@ export function Hero() {
       0.3
     )
 
-    // Decorative parallax text
+    // Decorative parallax text - moves vertically
     gsap.to('.hero-parallax-text', {
-      y: -120,
+      y: -200, // Move up vertically
       ease: 'none',
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top top',
+        start: 'top bottom',
         end: 'bottom top',
         scrub: 1,
       }
     })
 
-    // Section-level geometric elements
+    // Section-level geometric elements - vertical parallax
     gsap.to('.hero-geo', {
-      y: -60,
+      y: -100,
       rotation: 15,
       ease: 'none',
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top top',
+        start: 'top bottom',
         end: 'bottom top',
         scrub: 2,
       }
@@ -78,9 +85,9 @@ export function Hero() {
 
   return (
     <section
+      id="hero"
       ref={sectionRef}
       className="paper-section paper-section--light"
-      style={{ minHeight: '100vh' }}
     >
       {/* Section geometric decorations */}
       <div className="geo-layer">

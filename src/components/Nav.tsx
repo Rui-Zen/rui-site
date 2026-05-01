@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -11,12 +11,8 @@ export function Nav() {
   const logoRef = useRef<HTMLAnchorElement>(null)
   const linksRef = useRef<HTMLDivElement>(null)
   const lineRef = useRef<HTMLDivElement>(null)
-  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80)
-    window.addEventListener('scroll', onScroll, { passive: true })
-
     // Staggered entrance: logo first, then links slide in, then the bottom line draws
     const tl = gsap.timeline({ delay: 0.2 })
 
@@ -43,19 +39,20 @@ export function Nav() {
         '-=0.2'
       )
     }
-
-    return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault()
+    const targetElement = document.getElementById(targetId)
+    if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   return (
     <nav
       ref={navRef}
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{
-        transition: 'background 0.4s ease, padding 0.4s ease',
-        padding: scrolled ? '14px 48px' : '32px 48px',
-        background: scrolled ? 'var(--bg-parchment)' : 'transparent',
-      }}
+      className="absolute top-0 left-0 right-0 z-50 pt-8 pb-4 px-12"
     >
       <div className="mx-auto max-w-[1200px]">
         {/* Main row */}
@@ -65,6 +62,7 @@ export function Nav() {
             ref={logoRef}
             href="#"
             className="group"
+            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
             style={{
               fontFamily: 'var(--font-serif)',
               fontSize: '1.2rem',
@@ -96,6 +94,7 @@ export function Nav() {
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
+                onClick={(e) => handleNavClick(e, item.toLowerCase())}
                 className="relative px-5 py-2 group"
                 style={{
                   fontFamily: 'var(--font-sans)',
@@ -143,12 +142,9 @@ export function Nav() {
           className="mt-3"
           style={{
             height: '1px',
-            background: scrolled
-              ? 'linear-gradient(to right, transparent, var(--border-warm), transparent)'
-              : 'linear-gradient(to right, transparent, var(--border-warm) 20%, var(--border-warm) 80%, transparent)',
+            background: 'linear-gradient(to right, transparent, var(--border-warm) 20%, var(--border-warm) 80%, transparent)',
             transformOrigin: 'left center',
-            opacity: scrolled ? 0.6 : 0.3,
-            transition: 'opacity 0.4s ease',
+            opacity: 0.6,
           }}
         />
       </div>

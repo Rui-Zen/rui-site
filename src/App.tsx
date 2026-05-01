@@ -54,49 +54,50 @@ function App() {
       tick()
     }
 
-    // ── Section transition animations ──────────────────
+    // ── Vertical Depth/Zoom Effects ────────────────────
     const sections = gsap.utils.toArray<HTMLElement>('.paper-section')
 
     sections.forEach((section) => {
-      const inner = section.querySelector('.section-inner')
-      const geos = section.querySelectorAll('.geo-el')
+      // Don't apply this to the hero section so it loads normally
+      if (section.id === 'hero' || section.id === 'work') return
 
-      // Fade + lift content
+      const inner = section.querySelector('.section-inner')
+      
       if (inner) {
+        // Zoom in as it enters from the bottom
         gsap.fromTo(inner,
-          { y: 60, opacity: 0 },
+          { scale: 0.85, opacity: 0 },
           {
-            y: 0, opacity: 1,
+            scale: 1,
+            opacity: 1,
             duration: 1,
-            ease: 'power3.out',
+            ease: 'power2.out',
             scrollTrigger: {
               trigger: section,
-              start: 'top 80%',
-              end: 'top 20%',
-              toggleActions: 'play none none reverse',
+              start: 'top 85%',
+              end: 'top 30%',
+              scrub: 1,
+            }
+          }
+        )
+
+        // Zoom out as it leaves at the top
+        gsap.fromTo(inner,
+          { scale: 1, opacity: 1 },
+          {
+            scale: 0.9,
+            opacity: 0,
+            ease: 'power2.in',
+            scrollTrigger: {
+              trigger: section,
+              start: 'bottom 50%',
+              end: 'bottom 0%',
+              scrub: 1,
             }
           }
         )
       }
-
-      // Geometric elements parallax
-      geos.forEach((geo, i) => {
-        gsap.to(geo, {
-          y: (i % 2 === 0 ? -80 : 80),
-          rotation: (i % 2 === 0 ? 12 : -12),
-          ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.5,
-          }
-        })
-      })
     })
-
-    // ── Smooth section color transitions ────────────────
-    // Pin-free: sections just flow naturally with GSAP-driven reveals
 
     return () => {
       ScrollTrigger.getAll().forEach(t => t.kill())
@@ -104,7 +105,7 @@ function App() {
   }, [])
 
   return (
-    <div ref={mainRef} style={{ backgroundColor: 'var(--bg-parchment)', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: 'var(--bg-parchment)', minHeight: '100vh', overflowX: 'hidden' }}>
       <div id="bg-layer" />
       <div className="noise-overlay" />
       <GeometricBackground />
@@ -139,7 +140,7 @@ function App() {
 
       <Nav />
 
-      <main>
+      <main ref={mainRef}>
         <Hero />
         <About />
         <Work />

@@ -12,7 +12,7 @@ export function About() {
   const imageRef = useRef<HTMLImageElement>(null)
 
   useGSAP(() => {
-    // Paper shapes parallax
+    // Paper shapes parallax (vertical)
     const papers = gsap.utils.toArray<SVGElement>('.about-paper')
     papers.forEach((paper, i) => {
       gsap.fromTo(paper,
@@ -40,9 +40,9 @@ export function About() {
           filter: 'blur(0px)',
           ease: 'power2.out',
           scrollTrigger: {
-            trigger: imageRef.current,
-            start: 'top 80%',
-            end: 'top 30%',
+            trigger: '.about-image-mask',
+            start: 'top bottom',
+            end: 'center center',
             scrub: 1,
           }
         }
@@ -58,7 +58,7 @@ export function About() {
         ease: 'power3.inOut',
         scrollTrigger: {
           trigger: '.about-image-mask',
-          start: 'top 75%',
+          start: 'top 80%',
           toggleActions: 'play none none reverse',
         }
       }
@@ -74,7 +74,7 @@ export function About() {
         ease: 'power3.out',
         scrollTrigger: {
           trigger: '.about-text-content',
-          start: 'top 70%',
+          start: 'top 80%',
           toggleActions: 'play none none reverse',
         }
       }

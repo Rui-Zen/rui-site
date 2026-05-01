@@ -34,7 +34,7 @@ export function Writing() {
 
     // Stagger post rows
     gsap.fromTo('.writing-row',
-      { y: 30, opacity: 0, x: -10 },
+      { y: 30, opacity: 0, x: 20 },
       {
         y: 0, opacity: 1, x: 0,
         duration: 0.7,
@@ -50,7 +50,7 @@ export function Writing() {
 
     // Geometric parallax
     gsap.to('.writing-geo', {
-      y: -50,
+      y: -80,
       rotation: -8,
       ease: 'none',
       scrollTrigger: {

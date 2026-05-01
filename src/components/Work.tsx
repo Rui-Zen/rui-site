@@ -9,58 +9,72 @@ import { Separator } from './ui/separator'
 gsap.registerPlugin(ScrollTrigger)
 
 const projects = [
-  { id: '01', title: 'Atlas Finance', cat: 'Product Design', year: '2025', desc: 'End-to-end product design for a next-gen fintech platform serving enterprise clients.' },
-  { id: '02', title: 'Noto Editor', cat: 'Full-Stack', year: '2024', desc: 'A typography-first writing tool built for CJK creators and multilingual publishing.' },
-  { id: '03', title: 'Kami System', cat: 'Design Systems', year: '2024', desc: 'A comprehensive design system bridging print and screen across three languages.' },
+  { id: '01', title: 'Atlas Finance', cat: 'Product Design', year: '2025', desc: 'End-to-end product design for a next-gen fintech platform serving enterprise clients. A focus on typography and dense data visualization.' },
+  { id: '02', title: 'Noto Editor', cat: 'Full-Stack', year: '2024', desc: 'A typography-first writing tool built for CJK creators and multilingual publishing. Features custom rendering pipelines.' },
+  { id: '03', title: 'Kami System', cat: 'Design Systems', year: '2024', desc: 'A comprehensive design system bridging print and screen across three languages. Built on strict geometric constraints.' },
+  { id: '04', title: 'Aura Protocol', cat: 'Frontend', year: '2023', desc: 'Web3 interface focusing on accessible onboarding, replacing jargon with clear, intent-based UI patterns.' },
 ]
 
 export function Work() {
   const sectionRef = useRef<HTMLElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
-    // Stagger project cards in
-    gsap.fromTo('.work-card',
+    const track = trackRef.current
+    const section = sectionRef.current
+    if (!track || !section) return
+
+    // Calculate how far to move the track
+    const getScrollAmount = () => {
+      let trackWidth = track.scrollWidth
+      return -(trackWidth - window.innerWidth)
+    }
+
+    // Pin the work section and scroll horizontally
+    const tween = gsap.to(track, {
+      x: getScrollAmount,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        pin: true,
+        start: 'top top',
+        end: () => `+=${getScrollAmount() * -1}`,
+        scrub: 1,
+        invalidateOnRefresh: true
+      }
+    })
+
+    // Stagger cards entrance as they come into view during horizontal scroll
+    gsap.fromTo('.work-card-wrapper',
       { y: 60, opacity: 0 },
       {
         y: 0, opacity: 1,
         duration: 0.8,
-        stagger: 0.2,
+        stagger: 0.1,
         ease: 'power3.out',
         scrollTrigger: {
-          trigger: '.work-grid',
-          start: 'top 75%',
-          toggleActions: 'play none none reverse',
+          trigger: section,
+          start: 'top 60%',
         }
       }
     )
 
-    // Section title
-    gsap.fromTo('.work-title',
-      { y: 40, opacity: 0 },
-      {
-        y: 0, opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 70%',
-          toggleActions: 'play none none reverse',
-        }
-      }
-    )
-
-    // Geometric parallax
+    // Geometric parallax (moves based on vertical scroll before pin)
     gsap.to('.work-geo', {
-      y: -70,
+      y: -100,
       rotation: -10,
       ease: 'none',
       scrollTrigger: {
-        trigger: sectionRef.current,
+        trigger: section,
         start: 'top bottom',
         end: 'bottom top',
-        scrub: 2,
+        scrub: 1,
       }
     })
+
+    return () => {
+       ScrollTrigger.getById('work-pin')?.kill()
+    }
   }, { scope: sectionRef })
 
   return (
@@ -68,6 +82,7 @@ export function Work() {
       id="work"
       ref={sectionRef}
       className="paper-section paper-section--light"
+      style={{ overflow: 'hidden' }}
     >
       {/* Geometric layer */}
       <div className="geo-layer">
@@ -83,64 +98,73 @@ export function Work() {
         </svg>
       </div>
 
-      <div className="section-inner">
-        <div className="work-title">
+      {/* The horizontal track */}
+      <div ref={trackRef} className="flex items-center h-full pt-16" style={{ width: 'max-content', paddingLeft: '5vw', paddingRight: '15vw' }}>
+        
+        {/* Title panel (pins essentially since it's at the start of the horizontal scroll) */}
+        <div className="work-title shrink-0 w-[40vw] min-w-[300px] pr-20 relative z-10" style={{ paddingLeft: 'clamp(2rem, 5vw, 48px)' }}>
           <div className="eyebrow mb-8">Selected Projects</div>
           <h2 className="section-title mb-4">A Record of Craft</h2>
-          <Separator className="mb-16 bg-[var(--border-warm)]" />
+          <Separator className="bg-[var(--border-warm)] mb-6" />
+          <p style={{ color: 'var(--stone)', lineHeight: 1.6 }}>
+            Scroll to explore selected works. Each project represents a synthesis of rigorous design constraints and technical execution.
+          </p>
         </div>
 
-        <div className="work-grid flex flex-col gap-0">
-          {projects.map((p, i) => (
-            <div key={p.id}>
+        {/* Project cards spread horizontally */}
+        <div className="flex gap-12 shrink-0 items-center">
+          {projects.map((p) => (
+            <div key={p.id} className="work-card-wrapper w-[45vw] min-w-[320px] max-w-[600px]">
               <Card
-                className="work-card group/work border-none bg-transparent ring-0 shadow-none rounded-none py-10 transition-all duration-300 hover:bg-[var(--ivory)]"
+                className="group border border-[var(--border-soft)] bg-[var(--ivory)] shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-2 rounded-sm h-[400px] flex flex-col relative overflow-hidden"
               >
-                <CardContent className="px-0">
-                  <div className="grid grid-cols-[auto_1fr_auto] gap-8 items-center">
-                    {/* Project number */}
+                {/* Decorative background number */}
+                <div style={{
+                  position: 'absolute', right: '-5%', bottom: '-10%',
+                  fontSize: '12rem', fontFamily: 'var(--font-serif)', color: 'rgba(27,54,93,0.03)',
+                  pointerEvents: 'none', lineHeight: 1
+                }}>
+                  {p.id}
+                </div>
+
+                <CardContent className="p-10 flex flex-col h-full relative z-10">
+                  <div className="flex justify-between items-start mb-12">
                     <span style={{
                       fontFamily: 'var(--font-mono)',
-                      fontSize: '0.75rem',
+                      fontSize: '0.85rem',
                       color: 'var(--brand)',
                       fontVariantNumeric: 'tabular-nums',
                     }}>
                       {p.id}
                     </span>
+                    <Badge variant="outline" className="border-[var(--border-warm)] text-[var(--stone)] text-[0.6rem] tracking-wider uppercase shrink-0 bg-white">
+                      {p.year}
+                    </Badge>
+                  </div>
 
-                    {/* Project info */}
-                    <div>
-                      <div className="flex items-center gap-4 mb-2">
-                        <h3 style={{
-                          fontFamily: 'var(--font-serif)',
-                          fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
-                          fontWeight: 500,
-                          lineHeight: 1.1,
-                          transition: 'color 0.3s',
-                        }}
-                          className="group-hover/work:text-[var(--brand)]"
-                        >
-                          {p.title}
-                        </h3>
-                        <Badge variant="outline" className="border-[var(--border-warm)] text-[var(--stone)] text-[0.6rem] tracking-wider uppercase shrink-0">
-                          {p.year}
-                        </Badge>
-                      </div>
-                      <p style={{ fontSize: '0.9rem', color: 'var(--olive)', lineHeight: 1.5, maxWidth: '500px' }}>
-                        {p.desc}
-                      </p>
-                    </div>
+                  <div className="flex-1">
+                    <h3 style={{
+                      fontFamily: 'var(--font-serif)',
+                      fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
+                      fontWeight: 500,
+                      lineHeight: 1.1,
+                      marginBottom: '1rem',
+                      color: 'var(--near-black)',
+                    }}>
+                      {p.title}
+                    </h3>
+                    <p style={{ fontSize: '0.95rem', color: 'var(--olive)', lineHeight: 1.5 }}>
+                      {p.desc}
+                    </p>
+                  </div>
 
-                    {/* Category tag */}
-                    <Badge variant="secondary" className="bg-[#EEF2F7] text-[var(--brand)] text-[0.65rem] tracking-wider uppercase shrink-0">
+                  <div className="mt-auto">
+                    <Badge variant="secondary" className="bg-[#EEF2F7] text-[var(--brand)] text-[0.65rem] tracking-wider uppercase">
                       {p.cat}
                     </Badge>
                   </div>
                 </CardContent>
               </Card>
-              {i < projects.length - 1 && (
-                <Separator className="bg-[var(--border-warm)]" />
-              )}
             </div>
           ))}
         </div>
