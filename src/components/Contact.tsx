@@ -7,7 +7,7 @@ import { Separator } from './ui/separator'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const socials = ['LinkedIn', 'Twitter', 'GitHub', 'Read.cv']
+const socials = ['GitHub', 'LinkedIn', 'Instagram', 'Read.cv']
 
 export function Contact() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -55,7 +55,7 @@ export function Contact() {
     })
   }, { scope: sectionRef })
 
-  const titleWords = ["Let's", "Design", "The", "Future."]
+  const titleWords = ['Build', 'A', 'Useful', 'Archive.']
 
   return (
     <section
@@ -83,7 +83,7 @@ export function Contact() {
 
       <div className="section-inner" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <div className="contact-eyebrow eyebrow mb-10 justify-center" style={{ color: 'var(--stone)' }}>
-          Connection
+          Collaboration
         </div>
 
         <h2
@@ -99,6 +99,9 @@ export function Contact() {
         </h2>
 
         <div className="contact-email mb-12">
+          <p className="mx-auto mb-8 max-w-xl" style={{ color: 'var(--stone)', fontSize: '1rem', lineHeight: 1.55 }}>
+            Available for websites, interface systems, visual direction, photography-led pages, and editorial portfolio work.
+          </p>
           <Button
             asChild
             variant="ghost"

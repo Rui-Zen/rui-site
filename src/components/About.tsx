@@ -162,7 +162,7 @@ export function About() {
                 width: '80%',
                 height: '85%',
                 borderRadius: '4px',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+                boxShadow: '0 4pt 24pt rgba(0,0,0,0.18)',
               }}
             >
               <img
@@ -183,33 +183,45 @@ export function About() {
           {/* Text side */}
           <div className="about-text-content relative z-10">
             <div className="about-text-item eyebrow mb-8" style={{ color: 'var(--stone)' }}>
-              The Philosophy
+              Studio Method
             </div>
 
             <h2 className="about-text-item section-title mb-10">
-              Design as<br />a Dialogue
+              One Practice,<br />Four Mediums
             </h2>
 
             <Separator className="about-text-item mb-10 bg-[rgba(245,244,237,0.08)]" />
 
             <p className="about-text-item mb-6" style={{ fontSize: '1.05rem', lineHeight: 1.55, color: 'var(--stone)' }}>
-              I believe that great interfaces are not just seen—they are felt. My work is rooted in the CJK typography tradition, where negative space is as important as the stroke.
+              The work moves between code, layout, image, and language. Each medium has a different output, but the process stays consistent: observe carefully, reduce the noise, then build the clearest version.
             </p>
             <p className="about-text-item mb-12" style={{ fontSize: '1.05rem', lineHeight: 1.55, color: 'var(--stone)' }}>
-              By merging editorial restraint with technical precision, I build systems that scale without losing their human touch.
+              I use the discipline of design systems, the precision of front-end engineering, the patience of photography, and the cadence of writing to make portfolio work that feels considered rather than decorated.
             </p>
 
-            <div className="grid grid-cols-2 gap-10">
-              <div className="about-text-item">
-                <h4 className="mb-2" style={{ color: 'var(--bg-parchment)', fontSize: '1.1rem' }}>Restraint</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              <div className="about-text-item method-card-dark">
+                <h4 className="mb-2" style={{ color: 'var(--bg-parchment)', fontSize: '1.1rem' }}>Build</h4>
                 <p style={{ fontSize: '0.82rem', color: 'var(--stone)', lineHeight: 1.5 }}>
-                  Removing the non-essential to let the core message shine through.
+                  Production interfaces with motion, accessibility, and maintainable structure.
                 </p>
               </div>
-              <div className="about-text-item">
-                <h4 className="mb-2" style={{ color: 'var(--bg-parchment)', fontSize: '1.1rem' }}>Execution</h4>
+              <div className="about-text-item method-card-dark">
+                <h4 className="mb-2" style={{ color: 'var(--bg-parchment)', fontSize: '1.1rem' }}>Compose</h4>
                 <p style={{ fontSize: '0.82rem', color: 'var(--stone)', lineHeight: 1.5 }}>
-                  Bridging the final 1% gap between design and production code.
+                  Typography, grids, and art direction that create quiet authority.
+                </p>
+              </div>
+              <div className="about-text-item method-card-dark">
+                <h4 className="mb-2" style={{ color: 'var(--bg-parchment)', fontSize: '1.1rem' }}>Frame</h4>
+                <p style={{ fontSize: '0.82rem', color: 'var(--stone)', lineHeight: 1.5 }}>
+                  Photography that captures atmosphere, sequence, and visual memory.
+                </p>
+              </div>
+              <div className="about-text-item method-card-dark">
+                <h4 className="mb-2" style={{ color: 'var(--bg-parchment)', fontSize: '1.1rem' }}>Write</h4>
+                <p style={{ fontSize: '0.82rem', color: 'var(--stone)', lineHeight: 1.5 }}>
+                  Essays and product narratives that clarify what the work means.
                 </p>
               </div>
             </div>
@@ -234,7 +246,7 @@ export function About() {
           fontWeight: 500,
         }}
       >
-        DIALOGUE
+        METHOD
       </div>
     </section>
   )

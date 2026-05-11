@@ -9,10 +9,10 @@ import { Separator } from './ui/separator'
 gsap.registerPlugin(ScrollTrigger)
 
 const projects = [
-  { id: '01', title: 'Atlas Finance', cat: 'Product Design', year: '2025', desc: 'End-to-end product design for a next-gen fintech platform serving enterprise clients. A focus on typography and dense data visualization.' },
-  { id: '02', title: 'Noto Editor', cat: 'Full-Stack', year: '2024', desc: 'A typography-first writing tool built for CJK creators and multilingual publishing. Features custom rendering pipelines.' },
-  { id: '03', title: 'Kami System', cat: 'Design Systems', year: '2024', desc: 'A comprehensive design system bridging print and screen across three languages. Built on strict geometric constraints.' },
-  { id: '04', title: 'Aura Protocol', cat: 'Frontend', year: '2023', desc: 'Web3 interface focusing on accessible onboarding, replacing jargon with clear, intent-based UI patterns.' },
+  { id: '01', title: 'Interactive Portfolio', cat: 'Web Development', year: '2026', desc: 'A fast React portfolio with measured motion, responsive sections, reusable UI primitives, and a paper-like visual system.', outputs: ['React / TypeScript', 'GSAP motion', 'Responsive UI'] },
+  { id: '02', title: 'Editorial Identity System', cat: 'Design', year: '2025', desc: 'A restrained identity and interface language built around serif hierarchy, warm neutrals, and precise content modules.', outputs: ['Art direction', 'Design tokens', 'Layout system'] },
+  { id: '03', title: 'Quiet City Studies', cat: 'Photography', year: '2025', desc: 'A documentary photo sequence focused on architecture, negative space, street texture, and the rhythm between frames.', outputs: ['Photo editing', 'Sequencing', 'Look development'] },
+  { id: '04', title: 'Field Notes Archive', cat: 'Writing', year: '2024', desc: 'Essays and observations on craft, digital products, typography, image-making, and the discipline of noticing.', outputs: ['Essays', 'Case studies', 'Product narratives'] },
 ]
 
 export function Work() {
@@ -24,25 +24,30 @@ export function Work() {
     const section = sectionRef.current
     if (!track || !section) return
 
+    const isMobile = window.matchMedia('(max-width: 767px)').matches
+
     // Calculate how far to move the track
     const getScrollAmount = () => {
-      let trackWidth = track.scrollWidth
+      const trackWidth = track.scrollWidth
       return -(trackWidth - window.innerWidth)
     }
 
-    // Pin the work section and scroll horizontally
-    const tween = gsap.to(track, {
-      x: getScrollAmount,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: section,
-        pin: true,
-        start: 'top top',
-        end: () => `+=${getScrollAmount() * -1}`,
-        scrub: 1,
-        invalidateOnRefresh: true
-      }
-    })
+    if (!isMobile) {
+      // Pin the work section and scroll horizontally on larger screens.
+      gsap.to(track, {
+        x: getScrollAmount,
+        ease: 'none',
+        scrollTrigger: {
+          id: 'work-pin',
+          trigger: section,
+          pin: true,
+          start: 'top top',
+          end: () => `+=${getScrollAmount() * -1}`,
+          scrub: 1,
+          invalidateOnRefresh: true
+        }
+      })
+    }
 
     // Stagger cards entrance as they come into view during horizontal scroll
     gsap.fromTo('.work-card-wrapper',
@@ -99,24 +104,24 @@ export function Work() {
       </div>
 
       {/* The horizontal track */}
-      <div ref={trackRef} className="flex items-center h-full pt-16" style={{ width: 'max-content', paddingLeft: '5vw', paddingRight: '15vw' }}>
+      <div ref={trackRef} className="work-track flex items-center h-full pt-16" style={{ width: 'max-content', paddingLeft: '5vw', paddingRight: '15vw' }}>
         
         {/* Title panel (pins essentially since it's at the start of the horizontal scroll) */}
         <div className="work-title shrink-0 w-[40vw] min-w-[300px] pr-20 relative z-10" style={{ paddingLeft: 'clamp(2rem, 5vw, 48px)' }}>
-          <div className="eyebrow mb-8">Selected Projects</div>
-          <h2 className="section-title mb-4">A Record of Craft</h2>
+          <div className="eyebrow mb-8">Selected Portfolio</div>
+          <h2 className="section-title mb-4">Four Ways of Making</h2>
           <Separator className="bg-[var(--border-warm)] mb-6" />
           <p style={{ color: 'var(--stone)', lineHeight: 1.6 }}>
-            Scroll to explore selected works. Each project represents a synthesis of rigorous design constraints and technical execution.
+            A portfolio system for digital products, brand and interface design, photographic studies, and written thinking. Each card uses the same restraint, but speaks in a different medium.
           </p>
         </div>
 
         {/* Project cards spread horizontally */}
-        <div className="flex gap-12 shrink-0 items-center">
+        <div className="work-cards flex gap-12 shrink-0 items-center">
           {projects.map((p) => (
             <div key={p.id} className="work-card-wrapper w-[45vw] min-w-[320px] max-w-[600px]">
               <Card
-                className="group border border-[var(--border-soft)] bg-[var(--ivory)] shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-2 rounded-sm h-[400px] flex flex-col relative overflow-hidden"
+                className="group border border-[var(--border-soft)] bg-[var(--ivory)] transition-all duration-500 hover:-translate-y-2 rounded-sm h-[440px] flex flex-col relative overflow-hidden portfolio-card"
               >
                 {/* Decorative background number */}
                 <div style={{
@@ -137,7 +142,7 @@ export function Work() {
                     }}>
                       {p.id}
                     </span>
-                    <Badge variant="outline" className="border-[var(--border-warm)] text-[var(--stone)] text-[0.6rem] tracking-wider uppercase shrink-0 bg-white">
+                    <Badge variant="outline" className="border-[var(--border-warm)] text-[var(--stone)] text-[0.6rem] tracking-wider uppercase shrink-0 bg-[var(--ivory)]">
                       {p.year}
                     </Badge>
                   </div>
@@ -159,6 +164,13 @@ export function Work() {
                   </div>
 
                   <div className="mt-auto">
+                    <div className="mb-5 flex flex-wrap gap-2">
+                      {p.outputs.map(output => (
+                        <span key={output} className="portfolio-tag">
+                          {output}
+                        </span>
+                      ))}
+                    </div>
                     <Badge variant="secondary" className="bg-[#EEF2F7] text-[var(--brand)] text-[0.65rem] tracking-wider uppercase">
                       {p.cat}
                     </Badge>

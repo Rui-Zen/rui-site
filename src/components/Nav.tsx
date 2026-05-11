@@ -52,7 +52,7 @@ export function Nav() {
   return (
     <nav
       ref={navRef}
-      className="absolute top-0 left-0 right-0 z-50 pt-8 pb-4 px-12"
+      className="site-nav absolute top-0 left-0 right-0 z-50 pt-8 pb-4 px-12"
     >
       <div className="mx-auto max-w-[1200px]">
         {/* Main row */}
@@ -89,7 +89,7 @@ export function Nav() {
           </a>
 
           {/* Navigation links */}
-          <div ref={linksRef} className="flex items-center gap-0">
+          <div ref={linksRef} className="site-nav-links flex items-center gap-0">
             {navItems.map((item, i) => (
               <a
                 key={item}

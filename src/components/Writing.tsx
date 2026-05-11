@@ -8,9 +8,10 @@ import { Separator } from './ui/separator'
 gsap.registerPlugin(ScrollTrigger)
 
 const posts = [
-  { date: '2025', title: 'The Ten Invariants of Design Systems', tag: 'Systems' },
-  { date: '2024', title: 'Why Warm Grays Change Everything', tag: 'Design' },
-  { date: '2024', title: 'Shipping Design Tokens via CSS', tag: 'Tech' },
+  { date: '2026', title: 'How I Build Motion Without Making the Interface Loud', tag: 'Development' },
+  { date: '2025', title: 'Designing With Warm Neutrals, Serif Rhythm, and Fewer Decisions', tag: 'Design' },
+  { date: '2025', title: 'A Contact Sheet Is a Thinking Tool', tag: 'Photography' },
+  { date: '2024', title: 'Writing Case Studies That Explain the Judgment Behind the Work', tag: 'Writing' },
 ]
 
 export function Writing() {
@@ -80,9 +81,12 @@ export function Writing() {
 
       <div className="section-inner">
         <div className="writing-header mb-16">
-          <div className="eyebrow mb-8">Thinking</div>
-          <h2 className="section-title mb-4">Writing</h2>
+          <div className="eyebrow mb-8">Notes & Essays</div>
+          <h2 className="section-title mb-4">The Written Layer</h2>
           <Separator className="bg-[var(--border-warm)]" />
+          <p className="mt-8 max-w-2xl" style={{ color: 'var(--olive)', lineHeight: 1.55 }}>
+            Writing gives the portfolio its reasoning layer: short essays, case-study notes, image reflections, and technical explanations.
+          </p>
         </div>
 
         <div className="writing-list">
@@ -90,7 +94,7 @@ export function Writing() {
             <div key={post.title}>
               <a
                 href="#"
-                className="writing-row group flex items-center justify-between py-8 no-underline transition-all duration-300 hover:pl-5"
+                className="writing-row group flex items-center justify-between gap-8 py-8 no-underline transition-all duration-300 hover:pl-5"
                 style={{ color: 'inherit', textDecoration: 'none' }}
               >
                 <div className="flex items-center gap-10">

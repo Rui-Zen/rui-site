@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './index.css'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -11,11 +11,18 @@ import { Writing } from './components/Writing'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
 import { GeometricBackground } from './components/GeometricBackground'
+import { LoadingScreen } from './components/LoadingScreen'
 
 gsap.registerPlugin(ScrollTrigger)
 
 function App() {
   const mainRef = useRef<HTMLDivElement>(null)
+  const shellRef = useRef<HTMLDivElement>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const handleLoadingComplete = useCallback(() => {
+    setIsLoading(false)
+  }, [])
 
   useEffect(() => {
     // ── Custom cursor ──────────────────────────────────
@@ -138,17 +145,21 @@ function App() {
         }}
       />
 
-      <Nav />
+      <div ref={shellRef} className={`site-shell${isLoading ? ' site-shell--loading' : ''}`}>
+        <Nav />
 
-      <main ref={mainRef}>
-        <Hero />
-        <About />
-        <Work />
-        <Skills />
-        <Writing />
-        <Contact />
-        <Footer />
-      </main>
+        <main ref={mainRef}>
+          <Hero />
+          <About />
+          <Work />
+          <Skills />
+          <Writing />
+          <Contact />
+          <Footer />
+        </main>
+      </div>
+
+      {isLoading && <LoadingScreen shellRef={shellRef} onComplete={handleLoadingComplete} />}
     </div>
   )
 }

@@ -8,9 +8,10 @@ import { Separator } from './ui/separator'
 gsap.registerPlugin(ScrollTrigger)
 
 const skillGroups = [
-  { title: 'Design', items: ['Product Strategy', 'Design Systems', 'Typography', 'Motion'] },
-  { title: 'Technical', items: ['React / TS', 'Tailwind CSS', 'GSAP', 'Node.js'] },
-  { title: 'Process', items: ['User Research', 'Accessibility', 'Atomic Design', 'CI/CD'] },
+  { title: 'Develop', items: ['React / TypeScript', 'Responsive Systems', 'GSAP Motion', 'Performance'] },
+  { title: 'Design', items: ['Art Direction', 'Design Systems', 'Typography', 'Interaction'] },
+  { title: 'Photograph', items: ['Street Studies', 'Editorial Sets', 'Color Grading', 'Sequencing'] },
+  { title: 'Write', items: ['Essays', 'Case Studies', 'Product Voice', 'Documentation'] },
 ]
 
 export function Skills() {
@@ -101,19 +102,19 @@ export function Skills() {
       </div>
 
       <div className="section-inner">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_2.2fr] gap-20">
           {/* Header */}
           <div className="skills-header">
             <div className="eyebrow mb-8" style={{ color: 'var(--stone)' }}>Capabilities</div>
-            <h2 className="section-title mb-6">The Toolkit</h2>
+            <h2 className="section-title mb-6">Capabilities</h2>
             <Separator className="mb-8 bg-[rgba(245,244,237,0.06)]" />
             <p style={{ color: 'var(--stone)', lineHeight: 1.55, fontSize: '0.95rem' }}>
-              A hybrid approach to digital creation, balancing visual excellence with robust technical foundations.
+              A compact set of production skills organized by outcome: shipping websites, designing systems, making images, and writing clearly about the work.
             </p>
           </div>
 
           {/* Skills grid */}
-          <div className="skills-grid grid grid-cols-1 sm:grid-cols-3 gap-12">
+          <div className="skills-grid grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-10">
             {skillGroups.map(group => (
               <div key={group.title} className="skill-group">
                 <Badge variant="outline" className="mb-6 border-[var(--brand-light)] text-[var(--brand-light)] text-[0.6rem] tracking-[0.15em] uppercase">
@@ -155,7 +156,7 @@ export function Skills() {
         pointerEvents: 'none',
         fontWeight: 500,
       }}>
-        SYSTEMS
+        SKILLSET
       </div>
     </section>
   )
