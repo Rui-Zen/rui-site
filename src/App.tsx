@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import './index.css'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ScrollSmoother } from 'gsap/ScrollSmoother'
 import { Nav } from './components/Nav'
 import { Hero } from './components/Hero'
 import { About } from './components/About'
@@ -14,7 +15,7 @@ import { GeometricBackground } from './components/GeometricBackground'
 import { LoadingScreen } from './components/LoadingScreen'
 import { useScrollReveal } from './hooks/useScrollReveal'
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother)
 
 function App() {
   const mainRef = useRef<HTMLDivElement>(null)
@@ -45,6 +46,16 @@ function App() {
   }, [])
 
   useEffect(() => {
+    // ── ScrollSmoother — site-wide buttery scroll ──────
+    const smoother = ScrollSmoother.create({
+      wrapper: '#smooth-wrapper',
+      content: '#smooth-content',
+      smooth: 1.4,             // higher = smoother (more lag)
+      effects: true,           // enables data-speed/data-lag attributes
+      smoothTouch: 0.1,        // light smoothing on touch devices
+      normalizeScroll: true,   // fixes mobile address-bar jank
+    })
+
     // ── Custom cursor ──────────────────────────────────
     const cursor = document.querySelector<HTMLElement>('[data-cursor]')
     const dot = document.querySelector<HTMLElement>('[data-cursor-dot]')
@@ -127,6 +138,7 @@ function App() {
     })
 
     return () => {
+      smoother.kill()
       ScrollTrigger.getAll().forEach(t => t.kill())
     }
   }, [])
@@ -168,15 +180,19 @@ function App() {
       <div ref={shellRef} className={`site-shell${isLoading ? ' site-shell--loading' : ''}`}>
         <Nav />
 
-        <main ref={mainRef}>
-          <Hero isLoaded={isLoaded} />
-          <About />
-          <Work />
-          <Skills />
-          <Writing />
-          <Contact />
-          <Footer />
-        </main>
+        <div id="smooth-wrapper">
+          <div id="smooth-content">
+            <main ref={mainRef}>
+              <Hero isLoaded={isLoaded} />
+              <About />
+              <Work />
+              <Skills />
+              <Writing />
+              <Contact />
+              <Footer />
+            </main>
+          </div>
+        </div>
       </div>
 
       {isLoading && <LoadingScreen shellRef={shellRef} onComplete={handleLoadingComplete} />}

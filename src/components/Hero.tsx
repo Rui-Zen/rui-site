@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ScrollSmoother } from 'gsap/ScrollSmoother'
 import { useGSAP } from '@gsap/react'
 import profileImage from '../assets/profile.webp'
 
@@ -156,7 +157,10 @@ export function Hero({ isLoaded = true }: HeroProps) {
 
   const handleScroll = (id: string) => {
     const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
+    if (!el) return
+    const s = ScrollSmoother.get()
+    if (s) s.scrollTo(el, true, 'top 80px')
+    else el.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (

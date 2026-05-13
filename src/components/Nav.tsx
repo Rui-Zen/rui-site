@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ScrollSmoother } from 'gsap/ScrollSmoother'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -50,9 +51,10 @@ export function Nav() {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault()
     const targetElement = document.getElementById(targetId)
-    if (targetElement) {
-        targetElement.scrollIntoView({ behavior: 'smooth' })
-    }
+    if (!targetElement) return
+    const s = ScrollSmoother.get()
+    if (s) s.scrollTo(targetElement, true, 'top 80px')
+    else targetElement.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -68,7 +70,12 @@ export function Nav() {
             ref={logoRef}
             href="#"
             className="group"
-            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+            onClick={(e) => {
+              e.preventDefault()
+              const s = ScrollSmoother.get()
+              if (s) s.scrollTo(0, true)
+              else window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
             style={{
               fontFamily: 'var(--font-serif)',
               fontSize: '1.2rem',
