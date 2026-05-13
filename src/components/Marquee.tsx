@@ -5,23 +5,23 @@ interface MarqueeProps {
 }
 
 const defaultItems = [
-  'Design Thinking',
+  'Backend Logic',
   '✦',
-  'Craft Precision',
+  'Laravel',
   '✦',
-  'Typography Systems',
+  'Vue Interfaces',
   '✦',
-  'Front-End Engineering',
+  'PostgreSQL',
   '✦',
-  'Design Tokens',
+  'System Architecture',
   '✦',
-  'Singapore',
+  'QML / Go',
   '✦',
   'Open to Projects',
   '✦',
-  'CJK Typography',
+  'Brand Systems',
   '✦',
-  'Print & Screen',
+  'Photography / Editing',
   '✦',
 ]
 

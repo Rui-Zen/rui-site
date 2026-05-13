@@ -6,71 +6,142 @@ import profileImage from '../assets/profile.webp'
 
 gsap.registerPlugin(ScrollTrigger)
 
-export function Hero() {
+type HeroProps = {
+  isLoaded?: boolean
+}
+
+export function Hero({ isLoaded = true }: HeroProps) {
   const sectionRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
+  const innerRef = useRef<HTMLDivElement>(null)
 
+  // Pre-paint: hide entrance elements before isLoaded flips so there's no flash
   useGSAP(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top 85%',
-        toggleActions: 'play none none reverse',
-      }
-    })
+    gsap.set([
+      '.hero-photo-bg',
+      '.hero-topline span',
+      '.hero-title-line',
+      '.hero-eyebrow',
+      '.hero-subtitle-block',
+      '.hero-cta',
+      '.hero-scroll-rule',
+    ], { autoAlpha: 0 })
+  }, { scope: sectionRef })
 
-    if (titleRef.current) {
-      const lines = titleRef.current.querySelectorAll('.hero-title-line')
-      tl.fromTo(lines,
-        { y: 96, opacity: 0, rotationX: 16 },
-        { y: 0, opacity: 1, rotationX: 0, duration: 1, stagger: 0.1, ease: 'power4.out' }
-      )
+  // Entrance — runs once when the loading screen finishes
+  useGSAP(() => {
+    if (!isLoaded) return
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (reduceMotion) {
+      gsap.set([
+        '.hero-photo-bg',
+        '.hero-topline span',
+        '.hero-title-line',
+        '.hero-eyebrow',
+        '.hero-subtitle-block',
+        '.hero-cta',
+        '.hero-scroll-rule',
+      ], { autoAlpha: 1, y: 0, x: 0, rotationX: 0, scale: 1, clearProps: 'transform' })
+      return
     }
 
+    const tl = gsap.timeline({
+      defaults: { ease: 'power3.out' },
+    })
+
+    // 1. Photo backdrop slides in with mask reveal
     tl.fromTo('.hero-photo-bg',
-      { scale: 1.08, opacity: 0, clipPath: 'inset(0 0 0 24%)' },
-      { scale: 1, opacity: 1, clipPath: 'inset(0 0 0 0%)', duration: 1.25, ease: 'power3.out' },
-      0
+      { autoAlpha: 0, scale: 1.08, clipPath: 'inset(0 0 0 100%)' },
+      { autoAlpha: 1, scale: 1, clipPath: 'inset(0 0 0 0%)', duration: 1.4, ease: 'expo.out' }
     )
-    .fromTo('.hero-topline span, .hero-kicker',
-      { y: 16, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.56, stagger: 0.06, ease: 'power3.out' },
-      '-=0.8'
+    // 2. Topline meta fades in with letter slide
+    .fromTo('.hero-topline span',
+      { autoAlpha: 0, y: 12 },
+      { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08 },
+      '-=1.1'
     )
-    .fromTo('.hero-lede, .hero-meta-item',
-      { y: 24, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.64, stagger: 0.08, ease: 'power3.out' },
+    // 3. Eyebrow chip
+    .fromTo('.hero-eyebrow',
+      { autoAlpha: 0, y: 16 },
+      { autoAlpha: 1, y: 0, duration: 0.6 },
+      '-=0.85'
+    )
+    // 4. Title — staggered cascading lines with 3D tilt
+    .fromTo('.hero-title-line',
+      { autoAlpha: 0, y: 110, rotationX: -25, transformOrigin: '50% 100%' },
+      { autoAlpha: 1, y: 0, rotationX: 0, duration: 1.1, stagger: 0.14, ease: 'power4.out' },
+      '-=0.55'
+    )
+    // 5. Subtitle reveal
+    .fromTo('.hero-subtitle-block',
+      { autoAlpha: 0, y: 24, x: -10 },
+      { autoAlpha: 1, y: 0, x: 0, duration: 0.8 },
+      '-=0.7'
+    )
+    // 6. Buttons pop in
+    .fromTo('.hero-cta > *',
+      { autoAlpha: 0, y: 16, scale: 0.95 },
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.55, stagger: 0.08, ease: 'back.out(1.6)' },
       '-=0.45'
     )
+    // 7. Scroll rule extends across
     .fromTo('.hero-scroll-rule',
-      { scaleX: 0 },
-      { scaleX: 1, duration: 0.8, ease: 'power3.inOut' },
+      { autoAlpha: 1, scaleX: 0, transformOrigin: 'left center' },
+      { scaleX: 1, duration: 1, ease: 'power3.inOut' },
       '-=0.5'
     )
 
+    // Make ScrollTrigger aware of any layout settles after entrance
+    tl.add(() => ScrollTrigger.refresh())
+  }, { scope: sectionRef, dependencies: [isLoaded] })
+
+  // Seamless scrubbed exit -> hands off to the next section
+  useGSAP(() => {
+    if (!isLoaded || !innerRef.current) return
+
+    // Inner content gently scales down, lifts, blurs and fades while the user scrolls.
+    gsap.to(innerRef.current, {
+      yPercent: -12,
+      scale: 0.94,
+      filter: 'blur(6px)',
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top top',
+        end: 'bottom 30%',
+        scrub: 1,
+      },
+    })
+
+    // Background photo parallaxes upward to feel like the page is lifting off
     gsap.to('.hero-photo-bg img', {
+      yPercent: -14,
       scale: 1.08,
-      yPercent: -6,
       ease: 'none',
       scrollTrigger: {
         trigger: sectionRef.current,
         start: 'top top',
         end: 'bottom top',
-        scrub: 1.1,
-      }
+        scrub: 1.2,
+      },
     })
 
+    // Title lines drift at slightly different speeds for cinematic depth
     gsap.to('.hero-title-line', {
-      yPercent: -18,
+      yPercent: -22,
       ease: 'none',
       scrollTrigger: {
         trigger: sectionRef.current,
         start: 'top top',
         end: 'bottom top',
-        scrub: 1.4,
-      }
+        scrub: 1.5,
+      },
     })
 
+    // Scroll progress fills as user moves through the hero
     gsap.to('.hero-scroll-progress', {
       scaleX: 1,
       ease: 'none',
@@ -79,16 +150,14 @@ export function Hero() {
         start: 'top top',
         end: 'bottom top',
         scrub: 1,
-      }
+      },
     })
-  }, { scope: sectionRef })
+  }, { scope: sectionRef, dependencies: [isLoaded] })
 
-  const metadata = [
-    { n: '01', t: 'Build', d: 'React / TypeScript / GSAP' },
-    { n: '02', t: 'Design', d: 'Systems / typography / direction' },
-    { n: '03', t: 'Frame', d: 'Photography / sequencing' },
-    { n: '04', t: 'Write', d: 'Essays / case studies' },
-  ]
+  const handleScroll = (id: string) => {
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <section
@@ -101,34 +170,43 @@ export function Hero() {
         <div className="hero-photo-wash" />
       </div>
 
-      <div className="section-inner hero-minimal-inner">
+      <div ref={innerRef} className="section-inner hero-minimal-inner" style={{ willChange: 'transform, opacity, filter' }}>
         <div className="hero-topline" aria-label="Portfolio information">
-          <span>Rui Zen</span>
+          <span>Software Engineer</span>
           <span>Portfolio / 2026</span>
         </div>
 
-        <div className="hero-minimal-grid">
-          <div className="hero-kicker">Web developer / Designer / Photographer / Writer</div>
+        <div className="hero-content-grid">
+          <div className="hero-main-copy">
+            <div className="eyebrow hero-eyebrow">Rui-zen — Software Engineer</div>
 
-          <h1 ref={titleRef} className="hero-minimal-title" style={{ perspective: '700px' }}>
-            <span className="hero-title-line">Quiet digital</span>
-            <span className="hero-title-line">work with a</span>
-            <span className="hero-title-line">photographic eye.</span>
-          </h1>
+            <h1 ref={titleRef} className="hero-title" style={{ perspective: '700px' }}>
+              <span className="hero-title-line">I build software</span>
+              <span className="hero-title-line">where the logic</span>
+              <span className="hero-title-line">feels designed.</span>
+            </h1>
 
-          <p className="hero-lede">
-            I design and build portfolio websites that read like edited publications: restrained typography, warm paper texture, deliberate motion, and images that carry atmosphere instead of decoration.
-          </p>
-        </div>
-
-        <div className="hero-meta-grid" aria-label="Portfolio disciplines">
-          {metadata.map(item => (
-            <div key={item.n} className="hero-meta-item">
-              <span>{item.n}</span>
-              <strong>{item.t}</strong>
-              <small>{item.d}</small>
+            <div className="hero-subtitle-block">
+              <p className="hero-subtitle">
+                A backend-first developer who treats interfaces as part of the architecture — engineering systems that are as considered on the inside as they look on the outside.
+              </p>
             </div>
-          ))}
+
+            <div className="hero-cta">
+              <button
+                onClick={() => handleScroll('work')}
+                className="btn-primary hero-cta-btn"
+              >
+                View Work
+              </button>
+              <button
+                onClick={() => handleScroll('contact')}
+                className="btn-secondary hero-cta-btn"
+              >
+                Get in Touch
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="hero-scroll-track" aria-hidden="true">

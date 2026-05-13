@@ -8,10 +8,10 @@ import { Separator } from './ui/separator'
 gsap.registerPlugin(ScrollTrigger)
 
 const skillGroups = [
-  { title: 'Develop', items: ['React / TypeScript', 'Responsive Systems', 'GSAP Motion', 'Performance'] },
-  { title: 'Design', items: ['Art Direction', 'Design Systems', 'Typography', 'Interaction'] },
-  { title: 'Photograph', items: ['Street Studies', 'Editorial Sets', 'Color Grading', 'Sequencing'] },
-  { title: 'Write', items: ['Essays', 'Case Studies', 'Product Voice', 'Documentation'] },
+  { title: 'Backend', items: ['Laravel', 'PHP', 'PostgreSQL', 'Application Logic'] },
+  { title: 'Frontend', items: ['Vue', 'UI Interfaces', 'Responsive Layouts', 'Design Systems'] },
+  { title: 'Systems', items: ['Database Design', 'System Architecture', 'QML Experience', 'Go CMD Scripts'] },
+  { title: 'Creative', items: ['Photography', 'Photo Editing', 'Video Editing', 'Visual Fundamentals'] },
 ]
 
 export function Skills() {
@@ -20,10 +20,10 @@ export function Skills() {
   useGSAP(() => {
     // Section header
     gsap.fromTo('.skills-header',
-      { y: 40, opacity: 0 },
+      { y: 60, opacity: 0 },
       {
         y: 0, opacity: 1,
-        duration: 0.8,
+        duration: 1,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -33,13 +33,13 @@ export function Skills() {
       }
     )
 
-    // Stagger skill groups
+    // Skill groups — diagonal slide-in
     gsap.fromTo('.skill-group',
-      { y: 40, opacity: 0 },
+      { y: 60, opacity: 0, x: -20 },
       {
-        y: 0, opacity: 1,
-        duration: 0.7,
-        stagger: 0.15,
+        y: 0, opacity: 1, x: 0,
+        duration: 0.9,
+        stagger: 0.12,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: '.skills-grid',
@@ -49,14 +49,14 @@ export function Skills() {
       }
     )
 
-    // Individual skill items — stagger within each group
+    // Individual skill items — stagger within each group with scale bounce
     gsap.fromTo('.skill-item',
-      { y: 15, opacity: 0 },
+      { y: 20, opacity: 0, scale: 0.95 },
       {
-        y: 0, opacity: 1,
-        duration: 0.5,
-        stagger: 0.06,
-        ease: 'power3.out',
+        y: 0, opacity: 1, scale: 1,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: 'back.out(1.4)',
         scrollTrigger: {
           trigger: '.skills-grid',
           start: 'top 65%',
@@ -65,10 +65,40 @@ export function Skills() {
       }
     )
 
-    // Geometric parallax
+    // Horizontal connecting line draw
+    gsap.fromTo('.skills-divider',
+      { scaleX: 0 },
+      {
+        scaleX: 1,
+        duration: 1.2,
+        ease: 'power3.inOut',
+        scrollTrigger: {
+          trigger: '.skills-grid',
+          start: 'top 70%',
+          toggleActions: 'play none none reverse',
+        }
+      }
+    )
+
+    // Background text fade in
+    gsap.fromTo('.skills-bg-text',
+      { opacity: 0, x: 50 },
+      {
+        opacity: 1, x: 0,
+        duration: 1.5,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 60%',
+          toggleActions: 'play none none reverse',
+        }
+      }
+    )
+
+    // Geometric parallax with rotation
     gsap.to('.skills-geo', {
       y: -120,
-      rotation: 8,
+      rotation: 12,
       ease: 'none',
       scrollTrigger: {
         trigger: sectionRef.current,
@@ -107,9 +137,9 @@ export function Skills() {
           <div className="skills-header">
             <div className="eyebrow mb-8" style={{ color: 'var(--stone)' }}>Capabilities</div>
             <h2 className="section-title mb-6">Capabilities</h2>
-            <Separator className="mb-8 bg-[rgba(245,244,237,0.06)]" />
+            <Separator className="skills-divider mb-8 bg-[rgba(245,244,237,0.06)] origin-left" />
             <p style={{ color: 'var(--stone)', lineHeight: 1.55, fontSize: '0.95rem' }}>
-              A compact set of production skills organized by outcome: shipping websites, designing systems, making images, and writing clearly about the work.
+              A practical web development stack centered on backend logic, database structure, interface systems, and a growing creative practice in photography and editing.
             </p>
           </div>
 
@@ -144,18 +174,21 @@ export function Skills() {
       </div>
 
       {/* Background text */}
-      <div style={{
-        position: 'absolute',
-        bottom: '5%',
-        right: '-3%',
-        fontSize: 'clamp(8rem, 20vw, 18rem)',
-        color: 'rgba(245,244,237,0.01)',
-        zIndex: 0,
-        fontFamily: 'var(--font-serif)',
-        whiteSpace: 'nowrap',
-        pointerEvents: 'none',
-        fontWeight: 500,
-      }}>
+      <div
+        className="skills-bg-text"
+        style={{
+          position: 'absolute',
+          bottom: '5%',
+          right: '-3%',
+          fontSize: 'clamp(8rem, 20vw, 18rem)',
+          color: 'rgba(245,244,237,0.01)',
+          zIndex: 0,
+          fontFamily: 'var(--font-serif)',
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+          fontWeight: 500,
+        }}
+      >
         SKILLSET
       </div>
     </section>

@@ -4,7 +4,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const navItems = ['About', 'Work', 'Skills', 'Writing', 'Contact']
+const navItems = [
+  { label: 'About', id: 'about' },
+  { label: 'Work', id: 'work' },
+  { label: 'Skills', id: 'skills' },
+  { label: 'Notes', id: 'writing' },
+  { label: 'Contact', id: 'contact' },
+]
 
 export function Nav() {
   const navRef = useRef<HTMLElement>(null)
@@ -92,9 +98,9 @@ export function Nav() {
           <div ref={linksRef} className="site-nav-links flex items-center gap-0">
             {navItems.map((item, i) => (
               <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                onClick={(e) => handleNavClick(e, item.toLowerCase())}
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={(e) => handleNavClick(e, item.id)}
                 className="relative px-5 py-2 group"
                 style={{
                   fontFamily: 'var(--font-sans)',
@@ -125,7 +131,7 @@ export function Nav() {
                 }}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                {item}
+                {item.label}
                 {/* Underline indicator */}
                 <span
                   className="absolute bottom-0 left-5 right-5 h-px origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100"

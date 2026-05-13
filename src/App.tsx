@@ -12,6 +12,7 @@ import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
 import { GeometricBackground } from './components/GeometricBackground'
 import { LoadingScreen } from './components/LoadingScreen'
+import { useScrollReveal } from './hooks/useScrollReveal'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -20,8 +21,27 @@ function App() {
   const shellRef = useRef<HTMLDivElement>(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  // Scan and animate any [data-aos] elements once the loader completes.
+  useScrollReveal([isLoaded])
+
   const handleLoadingComplete = useCallback(() => {
-    setIsLoading(false)
+    // Use the View Transitions API for a seamless cross-fade between
+    // the loading screen and the hero, falling back to instant set.
+    const finish = () => {
+      setIsLoading(false)
+      // Defer the entrance trigger so Hero has mounted before animating.
+      requestAnimationFrame(() => setIsLoaded(true))
+    }
+    const docWithVT = document as Document & {
+      startViewTransition?: (cb: () => void) => { finished: Promise<void> }
+    }
+    if (typeof docWithVT.startViewTransition === 'function') {
+      docWithVT.startViewTransition(finish)
+    } else {
+      finish()
+    }
   }, [])
 
   useEffect(() => {
@@ -149,7 +169,7 @@ function App() {
         <Nav />
 
         <main ref={mainRef}>
-          <Hero />
+          <Hero isLoaded={isLoaded} />
           <About />
           <Work />
           <Skills />

@@ -168,7 +168,7 @@ export function About() {
               <img
                 ref={imageRef}
                 src={profileImage}
-                alt="Rui Zen — Profile"
+                alt="Rui-zen profile"
                 className="w-full h-full object-cover"
                 style={{ transformOrigin: 'center' }}
               />
@@ -182,47 +182,66 @@ export function About() {
 
           {/* Text side */}
           <div className="about-text-content relative z-10">
-            <div className="about-text-item eyebrow mb-8" style={{ color: 'var(--stone)' }}>
-              Studio Method
+            <div className="eyebrow mb-8" style={{ color: 'var(--stone)' }} data-aos="fade-right">
+              About Me
             </div>
 
-            <h2 className="about-text-item section-title mb-10">
-              One Practice,<br />Four Mediums
+            <h2 className="section-title mb-10" data-aos="fade-up" data-aos-delay="0.05">
+              The story<br />behind the code
             </h2>
 
-            <Separator className="about-text-item mb-10 bg-[rgba(245,244,237,0.08)]" />
+            <Separator className="mb-12 bg-[rgba(245,244,237,0.08)]" data-aos="fade-in" />
 
-            <p className="about-text-item mb-6" style={{ fontSize: '1.05rem', lineHeight: 1.55, color: 'var(--stone)' }}>
-              The work moves between code, layout, image, and language. Each medium has a different output, but the process stays consistent: observe carefully, reduce the noise, then build the clearest version.
-            </p>
-            <p className="about-text-item mb-12" style={{ fontSize: '1.05rem', lineHeight: 1.55, color: 'var(--stone)' }}>
-              I use the discipline of design systems, the precision of front-end engineering, the patience of photography, and the cadence of writing to make portfolio work that feels considered rather than decorated.
-            </p>
+            {/* Professional Background */}
+            <div className="about-story-block mb-10" data-aos="fade-up" data-aos-delay="0.1">
+              <div className="about-story-label">
+                <span className="about-story-num">01</span>
+                <span className="about-story-tag">Professional Background</span>
+              </div>
+              <p style={{ fontSize: '1.05rem', lineHeight: 1.6, color: 'var(--stone)' }}>
+                I'm a Computer Programmer at <span style={{ color: 'var(--bg-parchment)' }}>Data Center College of the Philippines, Baguio City</span>, where I work on internal systems, database structures, and application logic. My foundation is in backend development with Laravel, PHP, and PostgreSQL, and I extend that into Vue interfaces and design systems that respect the brand they live in.
+              </p>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <div className="about-text-item method-card-dark">
-                <h4 className="mb-2" style={{ color: 'var(--bg-parchment)', fontSize: '1.1rem' }}>Build</h4>
-                <p style={{ fontSize: '0.82rem', color: 'var(--stone)', lineHeight: 1.5 }}>
-                  Production interfaces with motion, accessibility, and maintainable structure.
-                </p>
+            {/* The Why */}
+            <div className="about-story-block mb-10" data-aos="fade-up" data-aos-delay="0.15">
+              <div className="about-story-label">
+                <span className="about-story-num">02</span>
+                <span className="about-story-tag">Why I Build</span>
               </div>
-              <div className="about-text-item method-card-dark">
-                <h4 className="mb-2" style={{ color: 'var(--bg-parchment)', fontSize: '1.1rem' }}>Compose</h4>
-                <p style={{ fontSize: '0.82rem', color: 'var(--stone)', lineHeight: 1.5 }}>
-                  Typography, grids, and art direction that create quiet authority.
-                </p>
+              <p style={{ fontSize: '1.05rem', lineHeight: 1.6, color: 'var(--stone)' }}>
+                I'm drawn to the moment when a tangle of requirements becomes a clean, dependable system — when a database schema, an API, and a UI all start speaking the same language. Software is one of the few places where careful thinking visibly pays off, and that quiet kind of craft is what keeps me coming back.
+              </p>
+            </div>
+
+            {/* Personal Touch */}
+            <div className="about-story-block mb-12" data-aos="fade-up" data-aos-delay="0.2">
+              <div className="about-story-label">
+                <span className="about-story-num">03</span>
+                <span className="about-story-tag">Off the Clock</span>
               </div>
-              <div className="about-text-item method-card-dark">
-                <h4 className="mb-2" style={{ color: 'var(--bg-parchment)', fontSize: '1.1rem' }}>Frame</h4>
-                <p style={{ fontSize: '0.82rem', color: 'var(--stone)', lineHeight: 1.5 }}>
-                  Photography that captures atmosphere, sequence, and visual memory.
-                </p>
+              <p style={{ fontSize: '1.05rem', lineHeight: 1.6, color: 'var(--stone)' }}>
+                When I'm not shipping code, I'm behind a camera or in an editing timeline — photography and video are my way of training the same eye for composition I bring to interfaces. Fun fact: I run my own Linux setup with custom Go scripts and a few QML experiments, mostly because tinkering with the tools is half the joy.
+              </p>
+            </div>
+
+            {/* Quick facts strip */}
+            <div className="about-facts" data-aos="fade-up" data-aos-delay="0.25" data-aos-stagger=".about-fact">
+              <div className="about-fact">
+                <span className="about-fact-label">Based in</span>
+                <span className="about-fact-value">Baguio City, PH</span>
               </div>
-              <div className="about-text-item method-card-dark">
-                <h4 className="mb-2" style={{ color: 'var(--bg-parchment)', fontSize: '1.1rem' }}>Write</h4>
-                <p style={{ fontSize: '0.82rem', color: 'var(--stone)', lineHeight: 1.5 }}>
-                  Essays and product narratives that clarify what the work means.
-                </p>
+              <div className="about-fact">
+                <span className="about-fact-label">Role</span>
+                <span className="about-fact-value">Computer Programmer</span>
+              </div>
+              <div className="about-fact">
+                <span className="about-fact-label">Stack</span>
+                <span className="about-fact-value">Laravel · Vue · PostgreSQL</span>
+              </div>
+              <div className="about-fact">
+                <span className="about-fact-label">Also into</span>
+                <span className="about-fact-value">Photography · Linux · Go</span>
               </div>
             </div>
           </div>

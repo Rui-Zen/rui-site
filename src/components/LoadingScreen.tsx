@@ -124,12 +124,12 @@ export function LoadingScreen({ shellRef, onComplete }: LoadingScreenProps) {
         <div className="loader-paper-number" ref={numberRef}>00</div>
 
         <div className="loader-photo-stamp">
-          <img src={profileImage} alt="Rui Zen" />
+          <img src={profileImage} alt="Rui-zen" />
         </div>
 
         <div className="loader-caption loader-caption-left">
-          <span>Rui Zen</span>
-          <span>Portfolio Archive</span>
+          <span>Rui-zen</span>
+          <span>Web Developer</span>
         </div>
 
         <div className="loader-caption loader-caption-right">

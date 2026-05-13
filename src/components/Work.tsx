@@ -9,10 +9,10 @@ import { Separator } from './ui/separator'
 gsap.registerPlugin(ScrollTrigger)
 
 const projects = [
-  { id: '01', title: 'Interactive Portfolio', cat: 'Web Development', year: '2026', desc: 'A fast React portfolio with measured motion, responsive sections, reusable UI primitives, and a paper-like visual system.', outputs: ['React / TypeScript', 'GSAP motion', 'Responsive UI'] },
-  { id: '02', title: 'Editorial Identity System', cat: 'Design', year: '2025', desc: 'A restrained identity and interface language built around serif hierarchy, warm neutrals, and precise content modules.', outputs: ['Art direction', 'Design tokens', 'Layout system'] },
-  { id: '03', title: 'Quiet City Studies', cat: 'Photography', year: '2025', desc: 'A documentary photo sequence focused on architecture, negative space, street texture, and the rhythm between frames.', outputs: ['Photo editing', 'Sequencing', 'Look development'] },
-  { id: '04', title: 'Field Notes Archive', cat: 'Writing', year: '2024', desc: 'Essays and observations on craft, digital products, typography, image-making, and the discipline of noticing.', outputs: ['Essays', 'Case studies', 'Product narratives'] },
+  { id: '01', title: 'Database-Led Web Apps', cat: 'Backend Development', year: '2026', desc: 'Web application work shaped around database structure, backend logic, authentication flows, and maintainable Laravel architecture.', outputs: ['Laravel / PHP', 'PostgreSQL', 'Application logic'] },
+  { id: '02', title: 'Brand Interface Systems', cat: 'UI Design', year: '2026', desc: 'Interface systems and visual components tailored to a brand identity, balancing usability, layout rhythm, and a clear product story.', outputs: ['Vue interfaces', 'Design systems', 'Responsive UI'] },
+  { id: '03', title: 'System Scripts & Tools', cat: 'Systems', year: '2025', desc: 'Utility work for personal systems, including QML experience and Go command scripts for repeatable workflows and small automations.', outputs: ['QML', 'Go scripts', 'Workflow tools'] },
+  { id: '04', title: 'Visual Learning Archive', cat: 'Photography / Editing', year: '2025', desc: 'An ongoing creative practice in photography, photo editing, and video editing while studying composition, color, pacing, and fundamentals.', outputs: ['Photography', 'Photo editing', 'Video editing'] },
 ]
 
 export function Work() {

@@ -6,12 +6,12 @@ export function Footer() {
       <Separator className="mb-10 bg-[rgba(245,244,237,0.04)]" />
       <div className="mx-auto flex max-w-[1200px] items-center justify-between">
         <div style={{ fontFamily: 'var(--font-sans)', letterSpacing: '0.05em' }}>
-          © 2026 Rui Zen. Developer / Designer / Photographer / Writer.
+          © 2026 Loreano Dee Louis Lukkanit. Rui-zen / Ruiz / Louis.
         </div>
         <div className="flex gap-8">
-          <span>Singapore</span>
-          <span>Remote-first</span>
-          <span style={{ color: 'var(--brand-light)' }}>Built on the Kami system</span>
+          <span>Web Developer</span>
+          <span>Backend / UI Systems</span>
+          <span style={{ color: 'var(--brand-light)' }}>Laravel · Vue · PHP · PostgreSQL</span>
         </div>
       </div>
     </footer>
