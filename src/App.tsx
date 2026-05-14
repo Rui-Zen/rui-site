@@ -56,6 +56,44 @@ function App() {
       normalizeScroll: true,   // fixes mobile address-bar jank
     })
 
+    // ── Section-level paper scroll transitions ─────────
+    // Keep opacity/filter off the parent so children can animate themselves.
+    gsap.utils.toArray<HTMLElement>('.paper-section').forEach((section) => {
+      if (section.id === 'hero' || section.id === 'work') return
+      const inner = section.querySelector('.section-inner')
+      if (!inner) return
+
+      gsap.fromTo(inner,
+        { y: 72, scale: 0.96 },
+        {
+          y: 0, scale: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 92%',
+            end: 'top 38%',
+            scrub: 1,
+            invalidateOnRefresh: true,
+          }
+        }
+      )
+
+      gsap.fromTo(inner,
+        { y: 0, scale: 1 },
+        {
+          y: -36, scale: 0.985,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'bottom 58%',
+            end: 'bottom 12%',
+            scrub: 1,
+            invalidateOnRefresh: true,
+          }
+        }
+      )
+    })
+
     // ── Custom cursor ──────────────────────────────────
     const cursor = document.querySelector<HTMLElement>('[data-cursor]')
     const dot = document.querySelector<HTMLElement>('[data-cursor-dot]')
@@ -92,52 +130,12 @@ function App() {
       tick()
     }
 
-    // ── Vertical Depth/Zoom Effects ────────────────────
-    const sections = gsap.utils.toArray<HTMLElement>('.paper-section')
-
-    sections.forEach((section) => {
-      // Don't apply this to the hero section so it loads normally
-      if (section.id === 'hero' || section.id === 'work') return
-
-      const inner = section.querySelector('.section-inner')
-      
-      if (inner) {
-        // Zoom in as it enters from the bottom
-        gsap.fromTo(inner,
-          { scale: 0.85, opacity: 0 },
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 1,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 85%',
-              end: 'top 30%',
-              scrub: 1,
-            }
-          }
-        )
-
-        // Zoom out as it leaves at the top
-        gsap.fromTo(inner,
-          { scale: 1, opacity: 1 },
-          {
-            scale: 0.9,
-            opacity: 0,
-            ease: 'power2.in',
-            scrollTrigger: {
-              trigger: section,
-              start: 'bottom 50%',
-              end: 'bottom 0%',
-              scrub: 1,
-            }
-          }
-        )
-      }
-    })
+    const refreshEarly = window.setTimeout(() => ScrollTrigger.refresh(), 150)
+    const refreshLate = window.setTimeout(() => ScrollTrigger.refresh(), 700)
 
     return () => {
+      window.clearTimeout(refreshEarly)
+      window.clearTimeout(refreshLate)
       smoother.kill()
       ScrollTrigger.getAll().forEach(t => t.kill())
     }

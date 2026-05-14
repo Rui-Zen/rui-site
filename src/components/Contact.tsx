@@ -7,8 +7,10 @@ import { Separator } from './ui/separator'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const socials = ['GitHub', 'LinkedIn', 'Instagram', 'Read.cv']
-
+const socials = [
+  { name: 'GitHub', url: 'https://github.com/Rui-Zen' },
+  { name: 'Instagram', url: 'https://instagram.com/ruizen' },
+]
 export function Contact() {
   const sectionRef = useRef<HTMLElement>(null)
 
@@ -116,7 +118,7 @@ export function Contact() {
                 textDecoration: 'none',
               }}
             >
-              hello@ruizen.design
+              ruizen@koamishin.com
             </a>
           </Button>
         </div>
@@ -126,8 +128,8 @@ export function Contact() {
         <div className="flex gap-8">
           {socials.map(social => (
             <a
-              key={social}
-              href="#"
+              key={social.name}
+              href={social.url}
               className="contact-social link-underline"
               style={{
                 fontFamily: 'var(--font-sans)',
@@ -138,7 +140,7 @@ export function Contact() {
                 color: 'var(--stone)',
               }}
             >
-              {social}
+              {social.name}
             </a>
           ))}
         </div>

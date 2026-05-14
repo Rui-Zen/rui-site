@@ -91,22 +91,83 @@ export function Work() {
   const sectionRef = useRef<HTMLElement>(null)
 
   useGSAP(() => {
+    const stackPin = sectionRef.current?.querySelector<HTMLElement>('.paper-stack-pin')
+    const stack = sectionRef.current?.querySelector<HTMLElement>('.paper-stack')
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const useHorizontalScroll = window.matchMedia('(min-width: 901px)').matches && !reduceMotion
+    let horizontalTween: gsap.core.Tween | undefined
+
+    const horizontalDistance = () => {
+      if (!stackPin || !stack) return 0
+      const pinStyle = window.getComputedStyle(stackPin)
+      const pinInlinePadding = parseFloat(pinStyle.paddingLeft) + parseFloat(pinStyle.paddingRight)
+      const visibleTrackWidth = stackPin.clientWidth - pinInlinePadding
+      return Math.max(0, stack.scrollWidth - visibleTrackWidth)
+    }
+
+    if (stackPin && stack && useHorizontalScroll) {
+      horizontalTween = gsap.to(stack, {
+        x: () => -horizontalDistance(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: stackPin,
+          start: 'top top',
+          end: () => `+=${Math.max(window.innerHeight, horizontalDistance())}`,
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          refreshPriority: -1,
+        },
+      })
+
+      requestAnimationFrame(() => ScrollTrigger.refresh())
+    }
+
     // ── Per-sheet entrance ────────────────────────────
     gsap.utils.toArray<HTMLElement>('.paper-sheet').forEach((sheet) => {
       const rot = parseFloat(sheet.dataset.rotate ?? '0')
-      gsap.fromTo(sheet,
-        { opacity: 0, y: 80, rotation: rot - 4, scale: 0.96 },
-        {
-          opacity: 1, y: 0, rotation: rot, scale: 1,
-          duration: 1.1,
-          ease: 'power3.out',
+
+      if (horizontalTween) {
+        gsap.timeline({
           scrollTrigger: {
+            containerAnimation: horizontalTween,
             trigger: sheet,
-            start: 'top 78%',
-            toggleActions: 'play none none reverse',
+            start: 'left 88%',
+            end: 'right 12%',
+            scrub: true,
           },
-        }
-      )
+        })
+          .fromTo(sheet,
+            { opacity: 0.58, y: 34, rotation: rot - 1.8, scale: 0.9, filter: 'blur(1px)' },
+            { opacity: 1, y: 0, rotation: rot, scale: 1, filter: 'blur(0px)', duration: 0.45, ease: 'none' }
+          )
+          .to(sheet, {
+            opacity: 0.62,
+            y: -22,
+            rotation: rot + 1.4,
+            scale: 0.92,
+            filter: 'blur(0.8px)',
+            duration: 0.55,
+            ease: 'none',
+          })
+      } else {
+        gsap.fromTo(sheet,
+          { opacity: 0, y: 80, rotation: rot - 4, scale: 0.96 },
+          {
+            opacity: 1, y: 0, rotation: rot, scale: 1,
+            duration: 1.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sheet,
+              start: 'top 78%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      if (horizontalTween) return
 
       // ── Title SplitText reveal ─────────────────────
       const titleEl = sheet.querySelector<HTMLElement>('.paper-sheet__title')
@@ -119,8 +180,9 @@ export function Work() {
           stagger: 0.02,
           ease: 'power3.out',
           scrollTrigger: {
+            ...(horizontalTween ? { containerAnimation: horizontalTween } : {}),
             trigger: titleEl,
-            start: 'top 72%',
+            start: horizontalTween ? 'left 72%' : 'top 72%',
             toggleActions: 'play none none reverse',
           },
         })
@@ -136,8 +198,9 @@ export function Work() {
             duration: 1.4,
             ease: 'power2.inOut',
             scrollTrigger: {
+              ...(horizontalTween ? { containerAnimation: horizontalTween } : {}),
               trigger: titleEl ?? sheet,
-              start: 'top 70%',
+              start: horizontalTween ? 'left 70%' : 'top 70%',
               toggleActions: 'play none none reverse',
             },
           }
@@ -153,8 +216,9 @@ export function Work() {
             duration: 0.9,
             ease: 'power2.out',
             scrollTrigger: {
+              ...(horizontalTween ? { containerAnimation: horizontalTween } : {}),
               trigger: rule.parentElement?.parentElement ?? rule,
-              start: 'top 80%',
+              start: horizontalTween ? 'left 80%' : 'top 80%',
               toggleActions: 'play none none reverse',
             },
           }
@@ -168,9 +232,10 @@ export function Work() {
           yPercent: -6,
           ease: 'none',
           scrollTrigger: {
+            ...(horizontalTween ? { containerAnimation: horizontalTween } : {}),
             trigger: sheet,
-            start: 'top bottom',
-            end: 'bottom top',
+            start: horizontalTween ? 'left right' : 'top bottom',
+            end: horizontalTween ? 'right left' : 'bottom top',
             scrub: 1.2,
           },
         })
@@ -181,6 +246,18 @@ export function Work() {
     const plane = sectionRef.current?.querySelector<SVGGElement>('.paper-plane')
     const planePath = sectionRef.current?.querySelector<SVGPathElement>('.paper-plane-path')
     const planeTrail = sectionRef.current?.querySelector<SVGPathElement>('.paper-plane-trail')
+    const planeTrigger = horizontalTween && stackPin
+      ? {
+          trigger: stackPin,
+          start: 'top top',
+          end: () => `+=${Math.max(window.innerHeight, horizontalDistance())}`,
+        }
+      : {
+          trigger: sectionRef.current,
+          start: 'top 40%',
+          end: 'bottom 80%',
+        }
+
     if (plane && planePath && planeTrail) {
       gsap.set(plane, { opacity: 0 })
 
@@ -188,8 +265,8 @@ export function Work() {
         opacity: 1,
         duration: 0.4,
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 60%',
+          trigger: horizontalTween && stackPin ? stackPin : sectionRef.current,
+          start: horizontalTween ? 'top top' : 'top 60%',
           toggleActions: 'play none none reverse',
         },
       })
@@ -203,10 +280,8 @@ export function Work() {
         },
         ease: 'none',
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 40%',
-          end: 'bottom 80%',
-          scrub: 1.2,
+          ...planeTrigger,
+          scrub: 1,
         },
       })
 
@@ -216,13 +291,15 @@ export function Work() {
           drawSVG: '0% 100%',
           ease: 'none',
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 40%',
-            end: 'bottom 80%',
-            scrub: 1.2,
+            ...planeTrigger,
+            scrub: 1,
           },
         }
       )
+    }
+
+    return () => {
+      horizontalTween?.kill()
     }
   }, { scope: sectionRef })
 
@@ -232,42 +309,6 @@ export function Work() {
       ref={sectionRef}
       className="paper-section paper-section--light paper-desk"
     >
-      {/* Desk SVG overlay — paper plane and its trail */}
-      <svg
-        className="paper-plane-svg"
-        viewBox="0 0 100 1000"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        {/* The trail (drawn progressively) */}
-        <path
-          className="paper-plane-trail"
-          d="M 12,80 C 40,180 90,260 60,360 C 30,460 80,560 50,680 C 20,800 70,880 88,940"
-          fill="none"
-          stroke="var(--brand)"
-          strokeWidth="0.6"
-          strokeDasharray="2 3"
-          opacity="0.45"
-        />
-        {/* The invisible motion path (same as trail) */}
-        <path
-          className="paper-plane-path"
-          d="M 12,80 C 40,180 90,260 60,360 C 30,460 80,560 50,680 C 20,800 70,880 88,940"
-          fill="none"
-          stroke="none"
-        />
-        {/* The plane glyph */}
-        <g className="paper-plane">
-          <path
-            d="M -8,-6 L 8,0 L -8,6 L -4,0 Z"
-            fill="var(--brand)"
-            stroke="var(--brand)"
-            strokeLinejoin="round"
-            strokeWidth="0.6"
-          />
-        </g>
-      </svg>
-
       <div className="section-inner paper-inner">
         {/* Editorial masthead */}
         <header className="paper-masthead">
@@ -285,8 +326,42 @@ export function Work() {
         </header>
 
         {/* Paper sheets */}
-        <div className="paper-stack">
-          {projects.map((p) => (
+        <div className="paper-stack-pin">
+          {/* Desk SVG overlay — pinned with the horizontal rail */}
+          <svg
+            className="paper-plane-svg"
+            viewBox="0 0 1000 100"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path
+              className="paper-plane-trail"
+              d="M 35,68 C 165,28 250,78 365,52 C 515,18 620,76 742,50 C 842,30 920,42 970,62"
+              fill="none"
+              stroke="var(--brand)"
+              strokeWidth="0.34"
+              strokeDasharray="1.8 3.6"
+              opacity="0.26"
+            />
+            <path
+              className="paper-plane-path"
+              d="M 35,68 C 165,28 250,78 365,52 C 515,18 620,76 742,50 C 842,30 920,42 970,62"
+              fill="none"
+              stroke="none"
+            />
+            <g className="paper-plane">
+              <path
+                d="M -8,-6 L 8,0 L -8,6 L -4,0 Z"
+                fill="var(--brand)"
+                stroke="var(--brand)"
+                strokeLinejoin="round"
+                strokeWidth="0.6"
+              />
+            </g>
+          </svg>
+
+          <div className="paper-stack">
+            {projects.map((p) => (
             <article
               key={p.id}
               className="paper-sheet"
@@ -415,7 +490,8 @@ export function Work() {
               {/* Folio mark */}
               <div className="paper-folio">— {p.id} —</div>
             </article>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* End note */}
