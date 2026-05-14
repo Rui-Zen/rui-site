@@ -65,21 +65,24 @@ export function About() {
       }
     )
 
-    // Text content stagger
-    gsap.fromTo('.about-text-item',
-      { y: 30, opacity: 0 },
-      {
-        y: 0, opacity: 1,
-        duration: 0.7,
-        stagger: 0.12,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.about-text-content',
-          start: 'top 80%',
-          toggleActions: 'play none none reverse',
+    // Text content stagger — animate the story blocks inside .about-text-content
+    const storyBlocks = gsap.utils.toArray<HTMLElement>('.about-story-block')
+    if (storyBlocks.length) {
+      gsap.fromTo(storyBlocks,
+        { y: 30, opacity: 0 },
+        {
+          y: 0, opacity: 1,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.about-text-content',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          }
         }
-      }
-    )
+      )
+    }
 
     // Geometric decorations
     gsap.to('.about-geo', {

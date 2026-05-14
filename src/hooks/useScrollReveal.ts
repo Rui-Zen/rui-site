@@ -65,6 +65,9 @@ export function useScrollReveal(deps: unknown[] = []) {
         ? Array.from(el.querySelectorAll<HTMLElement>(staggerSel))
         : el
 
+      // Skip if stagger selector returns nothing — avoids "GSAP target not found"
+      if (Array.isArray(targets) && targets.length === 0) return
+
       const tween = gsap.fromTo(targets, fromVars, {
         ...toVars,
         stagger: staggerSel ? 0.1 : 0,
